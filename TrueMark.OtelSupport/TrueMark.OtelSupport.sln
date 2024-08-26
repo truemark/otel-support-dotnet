@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueMark.Otel.Helper", "TrueMark.Otel.Helper.csproj", "{A942AA8B-B809-42E0-975A-5551D70B12AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueMark.Otel.Helper.Tests", "..\TrueMark.Otel.Helper.Tests\TrueMark.Otel.Helper.Tests.csproj", "{66276007-2661-4021-9DCC-CC59982B1D39}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A942AA8B-B809-42E0-975A-5551D70B12AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A942AA8B-B809-42E0-975A-5551D70B12AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A942AA8B-B809-42E0-975A-5551D70B12AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A942AA8B-B809-42E0-975A-5551D70B12AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66276007-2661-4021-9DCC-CC59982B1D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66276007-2661-4021-9DCC-CC59982B1D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66276007-2661-4021-9DCC-CC59982B1D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66276007-2661-4021-9DCC-CC59982B1D39}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
