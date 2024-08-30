@@ -6,18 +6,18 @@ using OpenTelemetry.Metrics;
 
 namespace TrueMark.Otel.Helper.Tests
 {
-    public class OpenTelemetryExtensionTests
+    public class OpenTelemetryHttpExtensionTests
     {
         readonly Mock<MeterProviderBuilder> builderMock;
 
-        public OpenTelemetryExtensionTests()
+        public OpenTelemetryHttpExtensionTests()
         {
             builderMock = new Mock<MeterProviderBuilder>();
 
             // Reset static fields before each test
-            OpenTelemetryExtension.IsInitialized = false;
-            OpenTelemetryExtension.Meter = null;
-            OpenTelemetryExtension.registeredMetricCounters.Clear();
+            OpenTelemetryHttpExtension.IsInitialized = false;
+            OpenTelemetryHttpExtension.Meter = null;
+            OpenTelemetryHttpExtension.RegisteredMetricCounters.Clear();
         }
 
         [Fact]
@@ -25,9 +25,9 @@ namespace TrueMark.Otel.Helper.Tests
         {
             var instrumentationName = "TestInstrumentation";
 
-            OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, instrumentationName);
+            OpenTelemetryHttpExtension.AddMetricsServiceMeter(builderMock.Object, instrumentationName);
 
-            Assert.True(OpenTelemetryExtension.IsInitialized);
+            Assert.True(OpenTelemetryHttpExtension.IsInitialized);
         }
 
         [Fact]
@@ -35,9 +35,9 @@ namespace TrueMark.Otel.Helper.Tests
         {
             var instrumentationName = "TestInstrumentation";
 
-            OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, instrumentationName);
+            OpenTelemetryHttpExtension.AddMetricsServiceMeter(builderMock.Object, instrumentationName);
 
-            Assert.Throws<InvalidOperationException>(() => OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, instrumentationName));
+            Assert.Throws<InvalidOperationException>(() => OpenTelemetryHttpExtension.AddMetricsServiceMeter(builderMock.Object, instrumentationName));
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace TrueMark.Otel.Helper.Tests
         [Fact]
         public void UseOpenTelemetry_ShouldAddMiddleware()
         {
-            OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, "TestInstrumentation");
+            OpenTelemetryHttpExtension.AddMetricsServiceMeter(builderMock.Object, "TestInstrumentation");
             var appMock = new Mock<IApplicationBuilder>();
             var metricsTags = new List<MetricTagHolder<int>>();
             var nextMock = new Mock<RequestDelegate>();
@@ -72,7 +72,7 @@ namespace TrueMark.Otel.Helper.Tests
         [Fact]
         public void UseOpenTelemetry_ShouldRegisterAndIncrementCounter()
         {
-            OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, "TestInstrumentation");
+            OpenTelemetryHttpExtension.AddMetricsServiceMeter(builderMock.Object, "TestInstrumentation");
             var appMock = new Mock<IApplicationBuilder>();
             var metricsTags = new List<MetricTagHolder<int>>
             {
@@ -101,7 +101,7 @@ namespace TrueMark.Otel.Helper.Tests
             appMock.Object.UseOpenTelemetry(metricsTags);
 
             // Validate
-            Assert.True(OpenTelemetryExtension.registeredMetricCounters.ContainsKey("TestMetric"));
+            Assert.True(OpenTelemetryHttpExtension.RegisteredMetricCounters.ContainsKey("TestMetric"));
         }
     }
 }
