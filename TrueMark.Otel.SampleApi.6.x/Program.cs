@@ -18,7 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<SampleApiOtelService, SampleApiOtelServiceImpl>();
+builder.Services.AddSingleton<SampleApi6OtelService, SampleApi6OtelServiceImpl>();
 
 // Configure OpenTelemetry
 ConfigureOpenTelemetry(builder.Services);
@@ -38,7 +38,7 @@ app.MapControllers();
 app.Run();
 
 // Add Metrics Registry here
-new SampleApiMetricsRegistry().LoadMetrics(app);
+new SampleApi6MetricsRegistry().LoadMetrics(app);
 
 void ConfigureOpenTelemetry(IServiceCollection services)
 {

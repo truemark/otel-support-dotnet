@@ -1,6 +1,6 @@
 namespace TrueMark.Otel.SampleApi._6.x.Metrics;
 
-public interface SampleApiOtelService
+public interface SampleApi6OtelService
 {
     void LogTestProcessedRequest();
     void LogTestSuccessfulRequest();

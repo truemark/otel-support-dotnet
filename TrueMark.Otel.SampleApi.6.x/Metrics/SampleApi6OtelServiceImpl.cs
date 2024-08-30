@@ -4,14 +4,14 @@ using TrueMark.Otel.Helper;
 
 namespace TrueMark.Otel.SampleApi._6.x.Metrics
 {
-    public class SampleApiOtelServiceImpl : SampleApiOtelService
+    public class SampleApi6OtelServiceImpl : SampleApi6OtelService
     {
-        static readonly MetricTagHolder<long> ProcessedRequestsMetric = SampleApiMetricsRegistry.ProcessedRequestMetric;
-        static readonly MetricTagHolder<long> SuccessfulRequestsMetric = SampleApiMetricsRegistry.SuccessfulRequestsMetric;
-        static readonly MetricTagHolder<long> FailedRequestsMetric = SampleApiMetricsRegistry.FailedRequestsMetric;
+        static readonly MetricTagHolder<long> ProcessedRequestsMetric = SampleApi6MetricsRegistry.ProcessedRequestMetric;
+        static readonly MetricTagHolder<long> SuccessfulRequestsMetric = SampleApi6MetricsRegistry.SuccessfulRequestsMetric;
+        static readonly MetricTagHolder<long> FailedRequestsMetric = SampleApi6MetricsRegistry.FailedRequestsMetric;
         readonly IHttpContextAccessor context;
 
-        public SampleApiOtelServiceImpl(IHttpContextAccessor context)
+        public SampleApi6OtelServiceImpl(IHttpContextAccessor context)
         {
             this.context = context;
         }
