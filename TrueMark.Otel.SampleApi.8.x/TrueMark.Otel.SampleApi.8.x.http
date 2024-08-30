@@ -1,0 +1,6 @@
+@TrueMark.Otel.SampleApi._8.x_HostAddress = http://localhost:5127
+
+GET {{TrueMark.Otel.SampleApi._8.x_HostAddress}}/test/
+Accept: application/json
+
+###
