@@ -59,7 +59,7 @@ void ConfigureOpenTelemetry(IServiceCollection services)
             .AddHttpClientInstrumentation()
             .AddAspNetCoreInstrumentation()
             .AddOtlpExporter()
-            .AddConsoleExporter())
+            .AddConsoleExporter()) // Console exporter is not needed in production, it is used here for demonstration purposes on local machine
         .WithMetrics(metrics => metrics
             .AddAspNetCoreInstrumentation()
             .SetResourceBuilder(resourceBuilder)
@@ -67,5 +67,5 @@ void ConfigureOpenTelemetry(IServiceCollection services)
             .AddRuntimeInstrumentation()
             .AddProcessInstrumentation()
             .AddOtlpExporter()
-            .AddConsoleExporter());
+            .AddConsoleExporter()); // Console exporter is not needed in production, it is used here for demonstration purposes on local machine
 }
