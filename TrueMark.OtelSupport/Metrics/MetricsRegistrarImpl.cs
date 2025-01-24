@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
 
-namespace TrueMark.Otel.Helper
+namespace TrueMark.OtelSupport.Metrics
 {
     /// <summary>
     /// Implementation of the IMetricsRegistrar interface for registering and managing metrics.

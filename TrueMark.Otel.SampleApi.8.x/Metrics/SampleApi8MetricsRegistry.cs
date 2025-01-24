@@ -1,6 +1,6 @@
-using TrueMark.Otel.Helper;
+using TrueMark.OtelSupport.Metrics;
 
-namespace TrueMark.Otel.SampleApi._6.x.Metrics
+namespace TrueMark.Otel.SampleApi._8.x.Metrics
 {
     public class SampleApi8MetricsRegistry : IMetricsRegistry
     {

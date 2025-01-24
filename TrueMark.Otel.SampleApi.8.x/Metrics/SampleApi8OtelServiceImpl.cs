@@ -1,8 +1,7 @@
-using System;
 using System.Diagnostics;
-using TrueMark.Otel.Helper;
+using TrueMark.OtelSupport.Metrics;
 
-namespace TrueMark.Otel.SampleApi._6.x.Metrics
+namespace TrueMark.Otel.SampleApi._8.x.Metrics
 {
     public class SampleApi8OtelServiceImpl : SampleApi8OtelService
     {

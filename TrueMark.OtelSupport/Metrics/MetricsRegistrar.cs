@@ -2,7 +2,7 @@
 
 using System.Diagnostics.Metrics;
 
-namespace TrueMark.Otel.Helper
+namespace TrueMark.OtelSupport.Metrics
 {
     public interface IMetricsRegistrar
     {

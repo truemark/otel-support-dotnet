@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using TrueMark.Otel.SampleApi._6.x.Metrics;
+using TrueMark.Otel.SampleApi._8.x.Metrics;
 
-namespace TrueMark.Otel.SampleApi._6.x.Controllers;
+namespace TrueMark.Otel.SampleApi._8.x.Controllers;
 
 [ApiController]
 [Route("[controller]")]

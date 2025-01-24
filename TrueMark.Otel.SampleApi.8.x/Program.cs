@@ -2,8 +2,8 @@ using OpenTelemetry.Contrib.Extensions.AWSXRay.Resources;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using TrueMark.Otel.Helper;
-using TrueMark.Otel.SampleApi._6.x.Metrics;
+using TrueMark.Otel.SampleApi._8.x.Metrics;
+using TrueMark.OtelSupport.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using OpenTelemetry.Metrics;
+using TrueMark.OtelSupport.Metrics;
 
-namespace TrueMark.Otel.Helper.Tests
+namespace TrueMark.OtelSupport.Tests.Metrics
 {
     public class OpenTelemetryHttpExtensionTests
     {

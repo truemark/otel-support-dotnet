@@ -1,9 +1,9 @@
-
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
 using Moq;
+using TrueMark.OtelSupport.Metrics;
 
-namespace TrueMark.Otel.Helper.Tests
+namespace TrueMark.OtelSupport.Tests.Metrics
 {
     public class MetricsRegistrarImplTests
     {

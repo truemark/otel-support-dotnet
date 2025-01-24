@@ -1,4 +1,4 @@
-namespace TrueMark.Otel.Helper
+namespace TrueMark.OtelSupport.Metrics
 {
     public class MetricsConfig
     {

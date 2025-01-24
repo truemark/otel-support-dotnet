@@ -2,7 +2,7 @@ using System.Diagnostics.Metrics;
 using Microsoft.AspNetCore.Builder;
 using OpenTelemetry.Metrics;
 
-namespace TrueMark.Otel.Helper
+namespace TrueMark.OtelSupport.Metrics
 {
     public static class OpenTelemetryHttpExtension
     {

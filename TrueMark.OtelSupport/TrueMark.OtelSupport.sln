@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueMark.Otel.Helper", "TrueMark.Otel.Helper.csproj", "{A942AA8B-B809-42E0-975A-5551D70B12AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueMark.OtelSupport", "TrueMark.OtelSupport.csproj", "{A942AA8B-B809-42E0-975A-5551D70B12AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueMark.Otel.Helper.Tests", "..\TrueMark.Otel.Helper.Tests\TrueMark.Otel.Helper.Tests.csproj", "{66276007-2661-4021-9DCC-CC59982B1D39}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueMark.OtelSupport.Tests", "..\TrueMark.OtelSupport.Tests\TrueMark.OtelSupport.Tests.csproj", "{66276007-2661-4021-9DCC-CC59982B1D39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueMark.Otel.SampleApi.6.x", "..\TrueMark.Otel.SampleApi.6.x\TrueMark.Otel.SampleApi.6.x.csproj", "{C9534D8F-CA04-4707-9515-1E78710C3F30}"
 EndProject

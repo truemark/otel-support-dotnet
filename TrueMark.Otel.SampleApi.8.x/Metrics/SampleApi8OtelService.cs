@@ -1,4 +1,4 @@
-namespace TrueMark.Otel.SampleApi._6.x.Metrics;
+namespace TrueMark.Otel.SampleApi._8.x.Metrics;
 
 public interface SampleApi8OtelService
 {

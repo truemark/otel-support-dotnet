@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>TrueMark.OtelSupport.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TrueMark.OtelSupport\TrueMark.Otel.Helper.csproj" />
+      <ProjectReference Include="..\TrueMark.OtelSupport\TrueMark.OtelSupport.csproj" />
     </ItemGroup>
 
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 
-namespace TrueMark.Otel.Helper
+namespace TrueMark.OtelSupport.Metrics
 {
     public interface IMetricsRegistry
     {

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace TrueMark.Otel.Helper
+namespace TrueMark.OtelSupport.Metrics
 {
     public class MetricTagHolder<T> where T : unmanaged
     {
