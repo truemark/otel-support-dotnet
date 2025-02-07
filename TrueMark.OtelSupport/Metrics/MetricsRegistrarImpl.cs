@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
 
@@ -11,12 +13,12 @@ namespace TrueMark.OtelSupport.Metrics
     {
         private readonly ILogger<MetricsRegistrarImpl> _logger;
         private readonly Meter _meter;
-        private readonly ConcurrentDictionary<string, Counter<long>> _counters = new();
-        private readonly ConcurrentDictionary<string, UpDownCounter<long>> _upDownCounters = new();
-        private readonly ConcurrentDictionary<string, Histogram<double>> _doubleHistograms = new();
-        private readonly ConcurrentDictionary<string, Histogram<long>> _longHistograms = new();
-        private readonly ConcurrentDictionary<string, ObservableGauge<long>> _longGauges = new();
-        private readonly ConcurrentDictionary<string, ObservableGauge<double>> _doubleGauges = new();
+        private readonly ConcurrentDictionary<string, Counter<long>> _counters = new ConcurrentDictionary<string, Counter<long>>();
+        private readonly ConcurrentDictionary<string, UpDownCounter<long>> _upDownCounters = new ConcurrentDictionary<string, UpDownCounter<long>>();
+        private readonly ConcurrentDictionary<string, Histogram<double>> _doubleHistograms = new ConcurrentDictionary<string, Histogram<double>>();
+        private readonly ConcurrentDictionary<string, Histogram<long>> _longHistograms = new ConcurrentDictionary<string, Histogram<long>>();
+        private readonly ConcurrentDictionary<string, ObservableGauge<long>> _longGauges = new ConcurrentDictionary<string, ObservableGauge<long>>();
+        private readonly ConcurrentDictionary<string, ObservableGauge<double>> _doubleGauges = new ConcurrentDictionary<string, ObservableGauge<double>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetricsRegistrarImpl"/> class.
