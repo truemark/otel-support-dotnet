@@ -12,7 +12,7 @@ namespace TrueMark.OtelSupport.Metrics
         static Logger logger = LogManager.GetCurrentClassLogger();
         static readonly object lockObject = new object();
         public static Meter Meter { get; set; }
-        public static readonly Dictionary<string, object> registeredMetricCounters = new Dictionary<string, object>();
+        public static readonly Dictionary<string, object> RegisteredMetricCounters = new Dictionary<string, object>();
         public static bool IsInitialized;
 
         public static MeterProviderBuilder AddMetricsServiceMeter(this MeterProviderBuilder builder, string instrumentationName, bool httpMetricsOverrideEnabled = false)
@@ -53,14 +53,14 @@ namespace TrueMark.OtelSupport.Metrics
                     {
                         continue;
                     }
-                    if (!registeredMetricCounters.TryGetValue(metricsTag.Name, out var counter))
+                    if (!RegisteredMetricCounters.TryGetValue(metricsTag.Name, out var counter))
                     {
                         lock (lockObject) // Lock this block to insert the counter to the dictionary
                         {
-                            if (!registeredMetricCounters.TryGetValue(metricsTag.Name, out counter))
+                            if (!RegisteredMetricCounters.TryGetValue(metricsTag.Name, out counter))
                             {
                                 counter = Meter.CreateCounter<T>(metricsTag.Name, metricsTag.Unit, metricsTag.Description);
-                                registeredMetricCounters[metricsTag.Name] = counter;
+                                RegisteredMetricCounters[metricsTag.Name] = counter;
                             }
                         }
                     }
