@@ -77,16 +77,16 @@ namespace TrueMark.OtelSupport.Tests.Metrics
             var appMock = new Mock<IApplicationBuilder>();
             var metricsTags = new List<MetricTagHolder<int>>
             {
-                new("TestMetric", "Test Metric", "per request")
+                new MetricTagHolder<int>("TestMetric", "Test Metric", "per request")
             };
             var context = new DefaultHttpContext();
 
             // Simulate a request to verify metrics processing
             var attributes = new List<KeyValuePair<string, object>>
             {
-                new("TestLabel", 1)
+                new KeyValuePair<string, object>("TestLabel", 1)
             };
-            var tagList = new TagList(new ReadOnlySpan<KeyValuePair<string, object?>>(attributes.ToArray()!));
+            var tagList = new TagList(new ReadOnlySpan<KeyValuePair<string, object>>(attributes.ToArray()));
             context.Items["TestMetric"] = new MetricTagHolder<int>("TestMetric", "Test Metric", "per request", tagList, 1);
 
             appMock.Setup(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()))
