@@ -82,11 +82,11 @@ namespace TrueMark.OtelSupport.Tests.Metrics
             var context = new DefaultHttpContext();
 
             // Simulate a request to verify metrics processing
-            var attributes = new List<KeyValuePair<string, object>>
+            var attributes = new List<KeyValuePair<string, object?>>
             {
-                new KeyValuePair<string, object>("TestLabel", 1)
+                new KeyValuePair<string, object?>("TestLabel", 1)
             };
-            var tagList = new TagList(new ReadOnlySpan<KeyValuePair<string, object>>(attributes.ToArray()));
+            var tagList = new TagList(new ReadOnlySpan<KeyValuePair<string, object?>>(attributes.ToArray()));
             context.Items["TestMetric"] = new MetricTagHolder<int>("TestMetric", "Test Metric", "per request", tagList, 1);
 
             appMock.Setup(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()))
@@ -95,6 +95,7 @@ namespace TrueMark.OtelSupport.Tests.Metrics
                     middleware(async _ =>
                     {
                         // Mocked next delegate
+                        await Task.CompletedTask;
                     }).Invoke(context).Wait();
                 });
 
