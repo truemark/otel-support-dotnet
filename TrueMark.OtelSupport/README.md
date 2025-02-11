@@ -1,7 +1,7 @@
 # TrueMark.OtelSupport
 
 [![NuGet](https://img.shields.io/nuget/v/TrueMark.OtelSupport)](https://www.nuget.org/packages/TrueMark.OtelSupport/)
-[![License](https://img.shields.io/github/license/truemark/otel-support-dotnet)](https://github.com/truemark/otel-support-dotnet/TrueMark.OtelSupport/LICENSE)
+[![License](https://img.shields.io/github/license/truemark/otel-support-dotnet)](https://github.com/truemark/otel-support-dotnet/blob/main/TrueMark.OtelSupport/LICENSE)
 
 ## Overview
 
