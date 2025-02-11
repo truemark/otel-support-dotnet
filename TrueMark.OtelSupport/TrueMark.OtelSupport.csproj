@@ -4,9 +4,13 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <Copyright>Copyright © 2024</Copyright>
         <RootNamespace>TrueMark.OtelSupport</RootNamespace>
+        <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath=""/>
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
         <PackageReference Include="OpenTelemetry.Api" Version="1.9.0" />
