@@ -1,0 +1,153 @@
+###############################################################################
+# .NET Library Workflow
+# Build, test, and publish a .NET Library
+###############################################################################
+# Assumptions made in this workflow:
+# - The branch you create releases from is called 'main'
+# - The branch you create canary releases from is called 'develop'
+# - You have a GitHub App that allows content changes to the repository
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        description: 'Dotnet version to use'
+        required: false
+        default: '8.0'
+        type: string
+      github-email:
+        description: 'GitHub email for pushing'
+        required: false
+        default: '41898282+github-actions[bot]@users.noreply.github.com'
+        type: string
+      github-name:
+        description: 'GitHub name for pushing'
+        required: false
+        default: 'github-actions[bot]'
+        type: string
+      project-path:
+        description: 'Path to the .NET project file (.csproj)'
+        required: false
+        default: '.'
+        type: string
+      develop-preid:
+        description: 'Preid for develop releases'
+        type: string
+        required: false
+        default: 'alpha'
+      develop-use-timestamp:
+        description: 'Use timestamps for develop releases'
+        type: boolean
+        required: false
+        default: true
+      branch-preid:
+        description: 'Preid for branch releases'
+        type: string
+        required: false
+        default: ''
+    secrets:
+      nuget-api-key:
+        description: 'NuGet API Key for publishing to NuGet registry'
+        required: true
+      private-key:
+        description: "GitHub App Key"
+        required: true
+      app-id:
+        description: "GitHub App ID"
+        required: true
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  dotnet-library:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: app-token
+        uses: getsentry/action-github-app-token@v3
+        with:
+          app_id: ${{ secrets.app-id }}
+          private_key: ${{ secrets.private-key }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+
+      - name: Restore dependencies
+        run: dotnet restore "${{ inputs.project-path }}"
+
+      - name: Build project
+        run: dotnet build "${{ inputs.project-path }}" --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test "${{ inputs.project-path }}" --configuration Release --no-build --verbosity normal
+
+      - name: Increment main branch version
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          VERSION=$(dotnet minver -t v -a)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Increment develop branch version
+        if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request' && inputs.develop-use-timestamp == false
+        run: |
+          VERSION=$(dotnet minver -t v -p "${{ inputs.develop-preid }}")
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Set develop branch version with timestamp
+        if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request' && inputs.develop-use-timestamp == true
+        run: |
+          TEMP_VERSION=$(dotnet minver -t v -p "${{ inputs.develop-preid }}")
+          VERSION="${TEMP_VERSION}.${{ github.run_number }}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Pack NuGet package
+        run: dotnet pack "${{ inputs.project-path }}" --configuration Release --output .
+
+      - name: Setup git config
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.email "${{ inputs.github-email }}"
+          git config user.name "${{ inputs.github-name }}"
+
+      - name: Commit and push version bump
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          git commit -a -m "Release $VERSION" -m "GitHub Run Number ${{ github.run_number }}" -m "[skip ci]"
+          git push
+
+      - name: Create tag ${{ env.VERSION }}
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          git tag -a "$VERSION" -m "$VERSION"
+          git push origin "$VERSION"
+
+      - name: Create Release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: comnoco/create-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: Publish NuGet package
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          dotnet nuget push "*.nupkg" --api-key "${{ secrets.nuget-api-key }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: |
+            *.nupkg

@@ -1,0 +1,24 @@
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  publish:
+    uses: truemark/github-workflows/.github/workflows/dotnet-library.yml@main
+    if: github.actor != 'dependabot[bot]'
+    with:
+      dotnet-version: "8.0"
+      develop-preid: "beta"
+      branch-preid: "alpha"
+      project-path: "./TrueMark.OtelSupport"
+    secrets:
+      nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+      app-id: ${{ secrets.RELEASE_BOT_ID }}
+      private-key: ${{ secrets.RELEASE_BOT_KEY }}
