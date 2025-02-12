@@ -150,6 +150,23 @@ jobs:
           VERSION="${TEMP_VERSION}.${{ github.run_number }}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
+      - name: Set other branch version
+        if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' && github.event_name != 'pull_request'
+        run: |
+          PREV_VERSION=$(dotnet minver -t v)
+          echo "Previous Version: $PREV_VERSION"
+
+          export VERSION1="${{ inputs.bumped-version-tag }}"
+          export VERSION2="$PREV_VERSION"
+          BUMPED_VS_PREVIOUS_VERSION_RESULT=$(dotnet script .github/scripts/compare_versions.csx)
+
+          if [[ "$BUMPED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
+            TEMP_VERSION="${{ inputs.bumped-version-tag }}-${{ inputs.branch-preid }}"
+          else
+            TEMP_VERSION=$(dotnet minver -t v -p "${{ inputs.branch-preid }}")
+          fi
+          VERSION="${TEMP_VERSION}.${{ github.run_number }}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Pack NuGet package
         run: dotnet pack "${{ inputs.project-path }}" --configuration Release --output .
