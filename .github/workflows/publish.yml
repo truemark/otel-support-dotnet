@@ -11,12 +11,13 @@ permissions:
 
 jobs:
   publish:
-    uses: truemark/github-workflows/.github/workflows/dotnet-library.yml@main
+    uses: ./.github/workflows/dotnet-library.yml
     if: github.actor != 'dependabot[bot]'
     with:
       dotnet-version: "8.0"
       develop-preid: "beta"
       branch-preid: "alpha"
+      default-version-tag: "1.0.0"
       project-path: "./TrueMark.OtelSupport"
     secrets:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}
