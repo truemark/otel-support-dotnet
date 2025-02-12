@@ -1,4 +1,4 @@
-#r "nuget: Semver, 2.1.0"
+#r "nuget: Semver, 3.0.0"
 using System;
 using Semver;
 
