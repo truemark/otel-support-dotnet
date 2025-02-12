@@ -116,7 +116,7 @@ jobs:
           export VERSION1="${{ inputs.bumped-version-tag }}"
           export VERSION2="$PREV_VERSION"
           BUMPED_VS_PREVIOUS_VERSION_RESULT=$(dotnet script .github/scripts/compare_versions.csx)
-          
+          echo "Bumped version comparison: $BUMPED_VS_PREVIOUS_VERSION_RESULT"
           if [[ "$BUMPED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
             TEMP_VERSION="${{ inputs.bumped-version-tag }}"
           else
