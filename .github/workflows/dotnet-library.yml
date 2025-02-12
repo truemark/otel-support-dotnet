@@ -106,9 +106,12 @@ jobs:
       - name: Increment main branch version
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
-          TEMP_VERSION=$(dotnet minver -t v -a patch)
-          if [[ "$TEMP_VERSION" == "0.0.0-beta" ]]; then
+          PREV_VERSION=$(dotnet minver -t v)
+          echo "Previous Version: $PREV_VERSION"
+          if [[ "$PREV_VERSION" == "0.0.0-alpha.0" || "$PREV_VERSION" == "0.0.0-beta" ]]; then
             TEMP_VERSION="${{ inputs.default-version-tag }}"
+          else
+            TEMP_VERSION=$(dotnet minver -t v -a patch)
           fi
           VERSION="${TEMP_VERSION}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
@@ -139,12 +142,6 @@ jobs:
           git config user.email "${{ inputs.github-email }}"
           git config user.name "${{ inputs.github-name }}"
 
-      - name: Commit and push version bump
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        run: |
-          git commit -a -m "Release $VERSION" -m "GitHub Run Number ${{ github.run_number }}" -m "[skip ci]"
-          git push
-
       - name: Create tag ${{ env.VERSION }}
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         run: |
@@ -152,12 +149,12 @@ jobs:
           git push origin "v$VERSION"
 
       - name: Create Release
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main2'
         uses: comnoco/create-release-action@v2
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
-          tag_name: ${{ env.VERSION }}
+          tag_name: "v${{ env.VERSION }}"
           release_name: Release ${{ env.VERSION }}
           draft: false
           prerelease: false
