@@ -106,7 +106,7 @@ jobs:
       - name: Increment main branch version
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
-          VERSION=$(dotnet minver -t v -a)
+          VERSION=$(dotnet minver -t v -a patch)
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Increment develop branch version
@@ -159,7 +159,7 @@ jobs:
           prerelease: false
 
       - name: Publish NuGet package
-        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main2' || github.ref == 'refs/heads/develop')
         run: |
           dotnet nuget push "*.nupkg" --api-key "${{ secrets.nuget-api-key }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
 
