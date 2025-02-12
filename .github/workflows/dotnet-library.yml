@@ -78,6 +78,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup .NET
@@ -119,7 +120,7 @@ jobs:
           if [[ "$BUMPED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
             TEMP_VERSION="${{ inputs.bumped-version-tag }}"
           else
-            TEMP_VERSION=$(dotnet minver -t v -a patch)
+            TEMP_VERSION=$(dotnet minver -t v -a patch --default-pre-release-phase "")
           fi
           VERSION="${TEMP_VERSION}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
