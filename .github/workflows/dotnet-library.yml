@@ -195,7 +195,6 @@ jobs:
           prerelease: false
 
       - name: Publish NuGet package
-        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: |
           dotnet nuget push "*.nupkg" --api-key "${{ secrets.nuget-api-key }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
 
