@@ -120,7 +120,8 @@ jobs:
           if [[ "$BUMPED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
             TEMP_VERSION="${{ inputs.bumped-version-tag }}"
           else
-            TEMP_VERSION=$(dotnet minver -t v -a patch --default-pre-release-phase "")
+            NEXT_VERSION=$(dotnet minver -t v -a patch --default-pre-release-phase "")
+            TEMP_VERSION=$(echo "$NEXT_VERSION" | cut -d'-' -f1)
           fi
           VERSION="${TEMP_VERSION}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
