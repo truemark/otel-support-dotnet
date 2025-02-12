@@ -45,7 +45,7 @@ on:
         type: string
         required: false
         default: ''
-      default-version-tag:
+      bumped-version-tag:
         description: 'Preid for branch releases'
         type: string
         required: false
@@ -103,12 +103,22 @@ jobs:
       - name: Add .NET Tools to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
+      - name: Install dotnet-script
+        run: dotnet tool install -g dotnet-script
+
       - name: Increment main branch version
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
-          TEMP_VERSION=$(dotnet minver -t v -a patch)
-          if [[ "$TEMP_VERSION" == "0.0.0-beta" ]]; then
-            TEMP_VERSION="${{ inputs.default-version-tag }}"
+          PREV_VERSION=$(dotnet minver -t v)
+          export VERSION1="${{ inputs.bumped-version-tag }}"
+          export VERSION2="$PREV_VERSION"
+          BUMBED_VS_PREVIOUS_VERSION_RESULT=$(dotnet script .github/scripts/compare_versions.csx)
+          
+          echo "Previous Version: $PREV_VERSION"
+          if [[ "$BUMBED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
+            TEMP_VERSION="${{ inputs.bumped-version-tag }}"
+          else
+            TEMP_VERSION=$(dotnet minver -t v -a patch)
           fi
           VERSION="${TEMP_VERSION}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
@@ -124,7 +134,7 @@ jobs:
         run: |
           TEMP_VERSION=$(dotnet minver -t v -p "${{ inputs.develop-preid }}")
           if [[ "$TEMP_VERSION" == "0.0.0-beta" ]]; then
-            TEMP_VERSION="${{ inputs.default-version-tag }}-${{ inputs.develop-preid }}"
+            TEMP_VERSION="${{ inputs.bumped-version-tag }}-${{ inputs.develop-preid }}"
           fi
           VERSION="${TEMP_VERSION}.${{ github.run_number }}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
@@ -139,12 +149,6 @@ jobs:
           git config user.email "${{ inputs.github-email }}"
           git config user.name "${{ inputs.github-name }}"
 
-      - name: Commit and push version bump
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        run: |
-          git commit -a -m "Release $VERSION" -m "GitHub Run Number ${{ github.run_number }}" -m "[skip ci]"
-          git push
-
       - name: Create tag ${{ env.VERSION }}
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         run: |
@@ -152,12 +156,12 @@ jobs:
           git push origin "v$VERSION"
 
       - name: Create Release
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main2'
         uses: comnoco/create-release-action@v2
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
-          tag_name: ${{ env.VERSION }}
+          tag_name: "v${{ env.VERSION }}"
           release_name: Release ${{ env.VERSION }}
           draft: false
           prerelease: false
