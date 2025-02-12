@@ -6,12 +6,21 @@ using Microsoft.AspNetCore.Builder;
 
 namespace TrueMark.OtelSupport.Metrics
 {
+    /// <summary>
+    /// Records HTTP server request metrics using OpenTelemetry.
+    /// </summary>
     public class HttpMetricsRecorder
     {
+        /// <summary>
+        /// The name of the meter used for recording HTTP metrics.
+        /// </summary>
         public const string TrueMarkHttpMetrics = "TrueMark.HttpMetrics";
 
         private readonly Histogram<double> requestDuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpMetricsRecorder"/> class.
+        /// </summary>
         public HttpMetricsRecorder()
         {
             var meter = new Meter(TrueMarkHttpMetrics);
@@ -90,8 +99,16 @@ namespace TrueMark.OtelSupport.Metrics
         }
     }
 
+    /// <summary>
+    /// Middleware extension for recording HTTP metrics.
+    /// </summary>
     public static class HttpMetricsMiddleware
     {
+        /// <summary>
+        /// Adds middleware to record HTTP metrics using the specified <see cref="HttpMetricsRecorder"/>.
+        /// </summary>
+        /// <param name="app">The <see cref="IApplicationBuilder"/> to add the middleware to.</param>
+        /// <param name="recorder">The <see cref="HttpMetricsRecorder"/> to use for recording metrics.</param>
         public static void UseHttpMetrics(this IApplicationBuilder app, HttpMetricsRecorder recorder)
         {
             app.Use(
