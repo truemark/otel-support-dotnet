@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   publish:
-    uses: truemark/github-workflows/.github/workflows/dotnet-library.yml@main
+    uses: truemark/otel-support-dotnet/.github/workflows/dotnet-library.yml@main
     if: github.actor != 'dependabot[bot]'
     with:
       dotnet-version: "8.0"
