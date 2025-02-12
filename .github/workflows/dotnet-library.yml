@@ -106,7 +106,11 @@ jobs:
       - name: Increment main branch version
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
-          VERSION=$(dotnet minver -t v -a patch)
+          TEMP_VERSION=$(dotnet minver -t v -a patch)
+          if [[ "$TEMP_VERSION" == "0.0.0-beta" ]]; then
+            TEMP_VERSION="${{ inputs.default-version-tag }}"
+          fi
+          VERSION="${TEMP_VERSION}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Increment develop branch version
@@ -144,8 +148,8 @@ jobs:
       - name: Create tag ${{ env.VERSION }}
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         run: |
-          git tag -a "$VERSION" -m "$VERSION"
-          git push origin "$VERSION"
+          git tag -a "v$VERSION" -m "v$VERSION"
+          git push origin "v$VERSION"
 
       - name: Create Release
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
