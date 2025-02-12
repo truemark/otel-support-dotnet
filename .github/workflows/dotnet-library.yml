@@ -45,7 +45,7 @@ on:
         type: string
         required: false
         default: ''
-      default-version-tag:
+      bumped-version-tag:
         description: 'Preid for branch releases'
         type: string
         required: false
@@ -78,6 +78,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup .NET
@@ -103,10 +104,26 @@ jobs:
       - name: Add .NET Tools to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
+      - name: Install dotnet-script
+        run: dotnet tool install -g dotnet-script
+
       - name: Increment main branch version
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
-          VERSION=$(dotnet minver -t v -a)
+          PREV_VERSION=$(dotnet minver -t v)
+          echo "Previous Version: $PREV_VERSION"
+          
+          export VERSION1="${{ inputs.bumped-version-tag }}"
+          export VERSION2="$PREV_VERSION"
+          BUMPED_VS_PREVIOUS_VERSION_RESULT=$(dotnet script .github/scripts/compare_versions.csx)
+          echo "Bumped version comparison: $BUMPED_VS_PREVIOUS_VERSION_RESULT"
+          if [[ "$BUMPED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
+            TEMP_VERSION="${{ inputs.bumped-version-tag }}"
+          else
+            NEXT_VERSION=$(dotnet minver -t v -a patch --default-pre-release-phase "")
+            TEMP_VERSION=$(echo "$NEXT_VERSION" | cut -d'-' -f1)
+          fi
+          VERSION="${TEMP_VERSION}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Increment develop branch version
@@ -118,13 +135,38 @@ jobs:
       - name: Set develop branch version with timestamp
         if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request' && inputs.develop-use-timestamp == true
         run: |
-          TEMP_VERSION=$(dotnet minver -t v -p "${{ inputs.develop-preid }}")
-          if [[ "$TEMP_VERSION" == "0.0.0-beta" ]]; then
-            TEMP_VERSION="${{ inputs.default-version-tag }}-${{ inputs.develop-preid }}"
+          PREV_VERSION=$(dotnet minver -t v)
+          echo "Previous Version: $PREV_VERSION"
+          
+          export VERSION1="${{ inputs.bumped-version-tag }}"
+          export VERSION2="$PREV_VERSION"
+          BUMPED_VS_PREVIOUS_VERSION_RESULT=$(dotnet script .github/scripts/compare_versions.csx)
+          
+          if [[ "$BUMPED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
+            TEMP_VERSION="${{ inputs.bumped-version-tag }}-${{ inputs.develop-preid }}"
+          else
+            TEMP_VERSION=$(dotnet minver -t v -p "${{ inputs.develop-preid }}")
           fi
           VERSION="${TEMP_VERSION}.${{ github.run_number }}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
+      - name: Set other branch version
+        if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' && github.event_name != 'pull_request'
+        run: |
+          PREV_VERSION=$(dotnet minver -t v)
+          echo "Previous Version: $PREV_VERSION"
+
+          export VERSION1="${{ inputs.bumped-version-tag }}"
+          export VERSION2="$PREV_VERSION"
+          BUMPED_VS_PREVIOUS_VERSION_RESULT=$(dotnet script .github/scripts/compare_versions.csx)
+
+          if [[ "$BUMPED_VS_PREVIOUS_VERSION_RESULT" -gt 0 ]]; then
+            TEMP_VERSION="${{ inputs.bumped-version-tag }}-${{ inputs.branch-preid }}"
+          else
+            TEMP_VERSION=$(dotnet minver -t v -p "${{ inputs.branch-preid }}")
+          fi
+          VERSION="${TEMP_VERSION}.${{ github.run_number }}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Pack NuGet package
         run: dotnet pack "${{ inputs.project-path }}" --configuration Release --output .
@@ -135,17 +177,11 @@ jobs:
           git config user.email "${{ inputs.github-email }}"
           git config user.name "${{ inputs.github-name }}"
 
-      - name: Commit and push version bump
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        run: |
-          git commit -a -m "Release $VERSION" -m "GitHub Run Number ${{ github.run_number }}" -m "[skip ci]"
-          git push
-
       - name: Create tag ${{ env.VERSION }}
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         run: |
-          git tag -a "$VERSION" -m "$VERSION"
-          git push origin "$VERSION"
+          git tag -a "v$VERSION" -m "v$VERSION"
+          git push origin "v$VERSION"
 
       - name: Create Release
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -153,13 +189,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
-          tag_name: ${{ env.VERSION }}
+          tag_name: "v${{ env.VERSION }}"
           release_name: Release ${{ env.VERSION }}
           draft: false
           prerelease: false
 
       - name: Publish NuGet package
-        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         run: |
           dotnet nuget push "*.nupkg" --api-key "${{ secrets.nuget-api-key }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
 

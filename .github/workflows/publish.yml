@@ -17,7 +17,7 @@ jobs:
       dotnet-version: "8.0"
       develop-preid: "beta"
       branch-preid: "alpha"
-      default-version-tag: "1.0.0"
+      bumped-version-tag: "1.0.0"
       project-path: "./TrueMark.OtelSupport"
     secrets:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}
