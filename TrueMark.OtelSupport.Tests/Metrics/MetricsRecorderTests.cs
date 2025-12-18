@@ -75,7 +75,7 @@ namespace TrueMark.OtelSupport.Tests.Metrics
             // Arrange
             OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, "TestInstrumentation");
 
-            httpContextAccessorMock.Setup(x => x.HttpContext).Returns((HttpContext)null);
+            httpContextAccessorMock.Setup(x => x.HttpContext).Returns((HttpContext?)null);
 
             var recorder = new MetricsRecorder(httpContextAccessorMock.Object);
             var attributes = new List<KeyValuePair<string, object?>>
@@ -185,7 +185,7 @@ namespace TrueMark.OtelSupport.Tests.Metrics
             OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, "TestInstrumentation");
 
             // Start with no HttpContext
-            httpContextAccessorMock.Setup(x => x.HttpContext).Returns((HttpContext)null);
+            httpContextAccessorMock.Setup(x => x.HttpContext).Returns((HttpContext?)null);
             var recorder = new MetricsRecorder(httpContextAccessorMock.Object);
 
             var attributes = new List<KeyValuePair<string, object?>>
