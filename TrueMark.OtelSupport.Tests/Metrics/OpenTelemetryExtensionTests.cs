@@ -7,6 +7,7 @@ using TrueMark.OtelSupport.Metrics;
 
 namespace TrueMark.OtelSupport.Tests.Metrics
 {
+    [Collection("OpenTelemetry")]
     public class OpenTelemetryExtensionTests
     {
         readonly Mock<MeterProviderBuilder> builderMock;
@@ -75,9 +76,10 @@ namespace TrueMark.OtelSupport.Tests.Metrics
         {
             OpenTelemetryExtension.AddMetricsServiceMeter(builderMock.Object, "TestInstrumentation");
             var appMock = new Mock<IApplicationBuilder>();
+            var metricName = "UseOpenTelemetryTestMetric"; // Unique name to avoid type conflicts
             var metricsTags = new List<MetricTagHolder<int>>
             {
-                new MetricTagHolder<int>("TestMetric", "Test Metric", "per request")
+                new MetricTagHolder<int>(metricName, "Test Metric", "per request")
             };
             var context = new DefaultHttpContext();
 
@@ -87,7 +89,7 @@ namespace TrueMark.OtelSupport.Tests.Metrics
                 new KeyValuePair<string, object?>("TestLabel", 1)
             };
             var tagList = new TagList(new ReadOnlySpan<KeyValuePair<string, object?>>(attributes.ToArray()));
-            context.Items["TestMetric"] = new MetricTagHolder<int>("TestMetric", "Test Metric", "per request", tagList, 1);
+            context.Items[metricName] = new MetricTagHolder<int>(metricName, "Test Metric", "per request", tagList, 1);
 
             appMock.Setup(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()))
                 .Callback<Func<RequestDelegate, RequestDelegate>>(middleware =>
@@ -103,7 +105,7 @@ namespace TrueMark.OtelSupport.Tests.Metrics
             appMock.Object.UseOpenTelemetry(metricsTags);
 
             // Validate
-            Assert.True(OpenTelemetryExtension.RegisteredMetricCounters.ContainsKey("TestMetric"));
+            Assert.True(OpenTelemetryExtension.RegisteredMetricCounters.ContainsKey(metricName));
         }
     }
 }
